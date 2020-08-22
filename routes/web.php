@@ -22,6 +22,8 @@ Auth::routes();
 
 Route::get('/', 'PostController@index')->name('home');
 
+
+
 Route::redirect('/home', '/');
 
 Route::get('/category/*', 'PostController@byCategory');
@@ -60,6 +62,8 @@ Route::group(['middleware' => 'auth'], function() {
         Auth::logout();
         return redirect('/');
     });
+
+    Route::get('/admin', 'HomeController@admin');
 
     Route::get('/dashboard/category', 'CategoryController@index');
 
