@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Comment;
+use App\Http\Resources\PostCollection;
 use App\Post;
+use App\User;
 use App\Unit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+use function GuzzleHttp\json_decode;
 
 class PostController extends Controller
 {
@@ -16,9 +22,10 @@ class PostController extends Controller
     public function index()
     {
         //
-        $categories = \App\Category::get();
-        $posts = Post::get();
-        return view('home', compact('posts', 'categories') );
+        $posts = Post::with('image')->get();
+        return $posts;
+
+        // return new PostCollection(Post::with('image')->get());
     }
 
     /**
@@ -59,10 +66,20 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show($post)
     {
         //
-        return view('posts.show', compact('post'));
+        $post = Post::with(['image', 'user', 'likes'])->where('id', '=', $post)->first();
+
+            
+        // $post = Post::find($post);
+
+        // foreach ($post->comments as $comment) {
+        //     $user = $comment->user;
+        //     $image = $comment->user->image->path;
+        // }
+        
+        return $post;
     }
 
     /**
@@ -99,23 +116,38 @@ class PostController extends Controller
         //
     }
 
-    public function addComment(Post $post, Request $request)
+    public function postsByUser($user)
     {
+        //
+        $posts = Post::with('image')->where('posted_by', $user)->get();
+        return $posts;
+
+        // return new PostCollection(Post::with('image')->get());
+    }
+
+    public function comments(Post $post)
+    {
+        $comments = Comment::where([['commentable_type', 'App\Post'], ['commentable_id', $post->id]])->get();
+        $comments->load('user.image');
+
+        return $comments;
+    }
+
+    public function addComment(Request $request)
+    {
+        $post = \App\Post::find($request->post_id);
         $comment = new \App\Comment;
-        $comment->text = $request->comment;
-        $comment->user_id = auth()->user()->id;
+        $comment->text = $request->comment_text;
+        $comment->user_id = $request->user()->id;
         $post->comments()->save($comment);
         return redirect()->back();
     }
 
     public function addLike(Post $post)
     {
-        if (!$post->likes->count()>0)
-        {
+        if (!$post->user_liked->count()>0) {
             $post->likes()->attach(auth()->user()->id);
-        }
-        else 
-        {
+        } else {
             $post->likes()->detach(auth()->user()->id);
         }
         return redirect()->back();

@@ -16,8 +16,9 @@ class CategoryController extends Controller
     {
         //
         $categories = Category::with('children')
-        ->get();
-        return view('admin.category', compact('categories'));
+            ->orderby('name', 'asc')
+            ->get();
+        return $categories;
     }
 
     /**

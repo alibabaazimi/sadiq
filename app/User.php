@@ -5,11 +5,11 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use HasApiTokens, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -39,23 +39,31 @@ class User extends Authenticatable
     ];
 
 
-    public function ads() {
-        return $this->hasMany('App\Advertisment');
+
+    public function posts()
+    {
+        return $this->hasMany('App\Post', 'posted_by');
     }
+
+    public function socialAccounts()
+    {
+        return $this->hasMany('App\SocialAccount');
+    }
+
+
 
     public function image()
     {
         return $this->morphOne('App\Image', 'imageable');
     }
 
-    public function scopeProfile($query) 
+    public function getAvatarAttribute()
     {
-        if ($this->image) {
-            return 'storage/'.$this->image->path;
-        }
-        else 
-        {
-            return 'profile-default.jpg';
-        }
+        return $this->image['path'];
+    }
+
+    public function messages()
+    {
+        return $this->hasMany('App\Message');
     }
 }

@@ -3,5 +3,42 @@
         "origin",
         "upstream",
         "https://github.com/alibabaazimi/sadiq.git"
-    ]
+    ],
+    "files.exclude": {
+        "node_modules": false,
+        "tests": false,
+        "vendor": false,
+        ".editorconfig": false,
+        ".env.example": false,
+        ".gitattributes": false,
+        ".gitignore": false,
+        ".styleci.yml": false,
+        "artisan": false,
+        "composer.json": false,
+        "composer.lock": false,
+        "package-lock.json": false,
+        "package.json": false,
+        "phpunit.xml": false,
+        "README.md": false,
+        "server.php": false,
+        "webpack.mix.js": false,
+        "bootstrap": false,
+        "public": false,
+        "storage": false,
+        "config": false,
+        ".vscode": false,
+        "resources/lang/en": false,
+        "resources/lang": false
+    },
+    "workspace.isHidden": false,
+    "importCost.typescriptExtensions": [
+        "\\.vue$"
+    ],
+
+        "indent_size": 4,
+        "indent_char": " ",
+        "css": {
+            "indent_size": 2
+        }
+    
 }
