@@ -59,7 +59,15 @@ class User extends Authenticatable
 
     public function getAvatarAttribute()
     {
-        return $this->image['path'];
+        if (!isset($this->image)) {
+            // $this['image'] = ['path'=> ''];
+            if ($this->socialAccounts->count()) {
+                $avatar = $this->socialAccounts->first()->avatar;
+            } else {
+                $avatar = asset(env('APP_URL').'/profile-default.jpg');
+            }
+        }
+        return $avatar;
     }
 
     public function messages()

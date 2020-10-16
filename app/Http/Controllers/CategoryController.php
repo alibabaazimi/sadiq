@@ -15,9 +15,10 @@ class CategoryController extends Controller
     public function index()
     {
         //
-        $categories = Category::with('children')
-            ->orderby('name', 'asc')
+        $categories = Category::with('children')->where('parent_id', null)
+            ->orderby('id', 'asc')
             ->get();
+
         return $categories;
     }
 

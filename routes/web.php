@@ -23,9 +23,6 @@ Route::get('login/{provider}', 'Auth\LoginController@redirectToProvider');
 Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCallback');
 
 
-Route::get('/post/{post}', 'PostController@show');
-Route::get('/post/{post}/comments', 'PostController@comments');
-
 Route::get('/{vue_capture?}', function () {
     return view('spa.index');
 })->where('vue_capture', '[\/\w\.-]*');

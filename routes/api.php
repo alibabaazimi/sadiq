@@ -15,21 +15,39 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::group(['prefix' => 'v1/admin'], function () {
+    Route::get('/users', 'AdminController@getUsers');
+    Route::get('/users/{user}', 'AdminController@getUser');
+    Route::delete('/users/{user}', 'AdminController@deleteUser');
+});
+
+
 Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function () {
     Route::get('/user', function (Request $request) {
         return $request->user()->id;
     });
-
-    Route::get('/currentUser', 'AuthController@currentUser');
-
+    Route::get('/auth/user', 'AuthController@getUser');
     Route::post('/logout', 'AuthController@logout');
 
-    Route::post('/posts/{post}/comments', 'PostController@addComment');
 
-    Route::post('/posts', 'FileUploadController@postPhotoUpload');
+    Route::get('/auth/user/posts', 'PostController@postsByMe');
+    Route::post('/posts/{post}/comments', 'PostController@addComment');
+    
+    Route::post('/posts', 'PostController@store');
 });
 
+
 Route::group(['prefix' => 'v1'], function () {
+    Route::get('/cities', function () {
+        $cities = App\City::all();
+        return $cities;
+    });
+    Route::get('/countries', function () {
+        $countries = App\Country::all();
+        return $countries;
+    });
+    Route::post('/register', 'AuthController@register')->middleware('guest:api');
+
     Route::get('/posts', 'PostController@index');
     Route::get('/posts/{post}', 'PostController@show');
     Route::get('/posts/{post}/comments', 'PostController@comments');
@@ -38,7 +56,6 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::post('/login', 'AuthController@login');
     Route::post('/register', 'AuthController@register');
-
 
     Route::get('/user/{user}/messages', 'UserController@index');
 

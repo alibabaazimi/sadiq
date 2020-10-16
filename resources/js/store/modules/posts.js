@@ -1,4 +1,5 @@
 import { post } from 'jquery'
+import auth from './auth'
 import PostAPI from '../../api/post'
 
 export const posts = {
@@ -18,10 +19,12 @@ export const posts = {
             unit_id: '',
             updated_at: '',
             user: '',
+            color: [],
+            device_brand: []
         },
         currentPostComments: '',
         all: [],
-        byUser: []
+        postsByMe: []
     },
     getters: {
         all(state) {
@@ -36,7 +39,10 @@ export const posts = {
         getPostComments(state, getters) {
             return state.currentPostComments;
         },
-        getPostsByUser(state, getters) {
+        postsByMe(state, getters) {
+            return state.postsByMe;
+        },
+        postsByUser(state, getters) {
             return state.byUser;
         }
     },
@@ -53,6 +59,9 @@ export const posts = {
             console.log(comments)
             
         },
+        SET_POSTS_BY_ME(state, posts) {
+            state.postsByMe = posts;
+        },
         SET_POSTS_BY_USER(state, posts) {
             state.byUser = posts;
         }
@@ -64,8 +73,14 @@ export const posts = {
                 commit('SET_POSTS', response.data)
             })
         },
+        fetchPostsByMe({commit}) {
+            PostAPI.getPostsByMe()
+            .then(function(response) {
+                commit('SET_POSTS_BY_ME', response.data)
+            })
+        },
         fetchPostsByUser({commit}, userId) {
-            PostAPI.getPostsByUser(userId)
+            PostAPI.getPostsByUser(this.state.auth.user.id)
             .then(function(response) {
                 commit('SET_POSTS_BY_USER', response.data)
             })

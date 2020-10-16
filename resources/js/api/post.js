@@ -5,6 +5,9 @@ export default {
     getPosts: function() {
         return axios.get(APP_CONFIG.API_URL + '/posts')
     },
+    getPostsByMe: function() {
+        return axios.get(APP_CONFIG.API_URL + '/auth/user/posts');
+    },
     getPostsByUser: function(userId) {
         return axios.get(APP_CONFIG.API_URL + '/user/'+ userId +'/posts');
     },

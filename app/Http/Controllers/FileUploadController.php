@@ -35,9 +35,12 @@ class FileUploadController extends Controller
     public function postPhotoUpload(Request $request)
     {
         $file = $request->file('image-file');
+        $thumbnail_file = $request->file('thumbnail-file');
         //$file_name = "profile_" . auth()->user()->id . "_" . Carbon::now()->format('YmdHs');
         
         $path = Storage::disk('public')->putFile('post_photos', $file);
+        $thumbnail_path = Storage::disk('public')->putFile('post_photos/thumbnails', $thumbnail_file);
+
         
         // $file_name = basename($path);
         $post = new \App\Post;
@@ -49,21 +52,22 @@ class FileUploadController extends Controller
         $post->unit_id = $request->unit_id;
         $post->category_id = $request->category_id;
 
-        $post->posted_by = 1;//$request->user()->id;
+        $post->posted_by = auth('api')->user()->id;
 
         $post->save();
         if (!$post->image) {
             $image = new Image;
             $image->path = $path;
+            $image->thumbnail_path = $thumbnail_path;
             $post->image()->save($image);
         } else {
             $image = $post->image;
             Storage::delete($image->path);
             $image->path = $path;
+            $image->thumbnail_path = $thumbnail_path;
             $image->save();
         }
         return $post;
-        return response()->json(array("file" => 'storage/'.$path), 200);
     }
 
 

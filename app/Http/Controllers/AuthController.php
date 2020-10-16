@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash as FacadesHash;
-use phpseclib\Crypt\Hash;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -22,8 +22,8 @@ class AuthController extends Controller
                     'client_id' => config('services.passport.client_id'),
                     'client_secret' => config('services.passport.client_secret'),
                     'username' => $request->username,
-                    'password' => $request->password
-                ]
+                    'password' => $request->password,
+                    ]
             ]);
             
             return $response->getBody();
@@ -38,19 +38,28 @@ class AuthController extends Controller
         }
     }
 
+
     public function register(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        return User::create([
+        if ($validator->fails()) {
+            return $validator->messages();
+        }
+
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => FacadesHash::make($request->password),
+            'password' => Hash::make($request->password),
         ]);
+        $token = $user->createToken('Login Token')->accessToken;
+        $user->profileImage = $user->avatar;
+
+        return ['user' => $user, 'access_token' => $token];
     }
 
     public function logout()
@@ -63,28 +72,25 @@ class AuthController extends Controller
         return response()->json("Logout Successfully", 200);
     }
 
-    public function currentUser()
+    public function getUser()
     {
         $user = \App\User::where('id', Auth::user()->id)->first();
 
         // $image = $user->image;
 
-        $id = $user->id;
-        $name = $user->name;
-        $email = $user->email;
-        $avatar = env('APP_URL').'/'.$user->avatar;
+        $user->profileImage = asset(env('APP_URL').'/profile-default.jpg');
 
 
-        if (!isset($user->image)) {
+        if (isset($user->image)) {
+            $user->profileImage = asset(env('APP_URL').'/'. $user->image->path);
+        } else {
             // $user['image'] = ['path'=> ''];
             if ($user->socialAccounts->count()) {
-                $avatar = $user->socialAccounts->first()->avatar;
-            } else {
-                $avatar = asset(env('APP_URL').'/profile-default.jpg');
+                $user->profileImage= $user->socialAccounts->first()->avatar;
             }
         }
 
-        $acc = ['id' => $id, 'name' => $name, 'email' => $email, 'avatar' => $avatar];
-        return ['user' => $acc];
+
+        return ['user' => $user];
     }
 }
