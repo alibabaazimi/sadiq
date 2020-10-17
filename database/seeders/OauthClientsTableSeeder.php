@@ -1,4 +1,5 @@
 <?php
+namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
@@ -12,27 +13,25 @@ class OauthClientsTableSeeder extends Seeder
      */
     public function run()
     {
-        
-
         \DB::table('oauth_clients')->delete();
         
-        \DB::table('oauth_clients')->insert(array (
-            0 => 
-            array (
+        \DB::table('oauth_clients')->insert(array(
+            0 =>
+            array(
                 'created_at' => '2020-10-14 19:47:28',
                 'id' => 1,
                 'name' => 'Laravel Personal Access Client',
                 'password_client' => 0,
                 'personal_access_client' => 1,
-                'provider' => NULL,
+                'provider' => null,
                 'redirect' => 'http://localhost',
                 'revoked' => 0,
                 'secret' => 'F00tSYEV1Mk0pEb4GiFFsjkcOqWUktmHwqlJbKwC',
                 'updated_at' => '2020-10-14 19:47:28',
-                'user_id' => NULL,
+                'user_id' => null,
             ),
-            1 => 
-            array (
+            1 =>
+            array(
                 'created_at' => '2020-10-14 19:47:28',
                 'id' => 2,
                 'name' => 'Laravel Password Grant Client',
@@ -43,10 +42,8 @@ class OauthClientsTableSeeder extends Seeder
                 'revoked' => 0,
                 'secret' => 'xSbNQERv4ePMAJQ0wD62dGOEqrk4WlDXmKayy0J1',
                 'updated_at' => '2020-10-14 19:47:28',
-                'user_id' => NULL,
+                'user_id' => null,
             ),
         ));
-        
-        
     }
 }

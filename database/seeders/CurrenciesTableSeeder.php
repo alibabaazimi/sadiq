@@ -1,4 +1,5 @@
 <?php
+namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
@@ -12,11 +13,6 @@ class CurrenciesTableSeeder extends Seeder
      */
     public function run()
     {
-        
-
         \DB::table('currencies')->delete();
-        
-        
-        
     }
 }

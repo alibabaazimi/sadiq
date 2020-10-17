@@ -9,13 +9,15 @@
     "license": "MIT",
     "require": {
         "php": "^7.3",
+        "facade/ignition": "^2.3.6",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
+        "google/cloud-error-reporting": "^0.18.0",
+        "google/cloud-logging": "^1.21",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.0",
         "laravel/passport": "^10.0",
         "laravel/socialite": "^5.0",
-        "facade/ignition": "^2.3.6",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
         "swiftmailer/swiftmailer": "^6.0"
