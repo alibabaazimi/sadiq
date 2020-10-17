@@ -22,6 +22,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('login/{provider}', 'Auth\LoginController@redirectToProvider');
 Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCallback');
 
+Route::get('/', function () {
+    return 'Yes Laravel Works on Google Cloud';
+});
 
 Route::get('/{vue_capture?}', function () {
     return view('spa.index');
