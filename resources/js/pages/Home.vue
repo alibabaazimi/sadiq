@@ -2,8 +2,8 @@
     <div>
         <portal-target name="destination"></portal-target>
         <div class="row mb-2 mt-1 sticky-top" style="top: 75px">
-            <div class="col-md-8 offset-md-2">
-                <div class="input-group mb-3">
+            <div class="col-md-6 offset-md-3">
+                <div class="input-group mb-3 shadow">
                     <div class="input-group-prepend">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
                             {{ searchCategory }}

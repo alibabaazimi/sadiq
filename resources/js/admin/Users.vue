@@ -49,7 +49,7 @@ import 'sweetalert2/src/sweetalert2.scss'
 
     export default {
         created() {
-            this.$store.dispatch('admin/fetchUsers', this.$route.params.userId);
+            this.$store.dispatch('admin/fetchUsers');
         },
         computed: {
             users() {

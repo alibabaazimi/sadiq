@@ -56,7 +56,6 @@ export const posts = {
         SET_POST_COMMENTS(state, comments) {
             // Vue.​Set(state.currentPost, 'comments', comments);
             state.currentPostComments = comments;
-            console.log(comments)
             
         },
         SET_POSTS_BY_ME(state, posts) {

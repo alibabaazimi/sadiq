@@ -24,7 +24,7 @@ class PostController extends Controller
     public function index()
     {
         //
-        $posts = Post::with('image')->get();
+        $posts = Post::with('image', 'currency')->get();
         $default_image = '';
         return $posts;
 
@@ -101,8 +101,8 @@ class PostController extends Controller
         $post->building_rooms = $request->buildingRooms;
         $post->building_deposit = $request->buildingDeposit;
         $post->building_rent_per_month = $request->buildingRentPerMonth;
-        $post->building_has_parking = $request->buildingHasParking;
-        $post->building_has_elevator = $request->buildingHasElevator;
+        $post->building_has_parking = $request->buildingHasParking ? 1 : 0;
+        $post->building_has_elevator = $request->buildingHasElevator ? 1 : 0;
 
         // // Car
         // carBrand: '',
@@ -117,8 +117,13 @@ class PostController extends Controller
         // availableColors: [],
         // Age: '',
         // usageStatus: '',
-        $post->available_colors = $request->availableColors;
+        // $post->available_colors = $request->availableColors;
         $post->usage_status = $request->usageStatus;
+
+        $colors = [];
+        if ($request->availableColors!="") {
+            $colors = explode(',', $request->availableColors);
+        }
 
         // Contact Information
         // contactEmail: '',
@@ -153,6 +158,10 @@ class PostController extends Controller
         $files = $this->verifyAndStoreImage($request, 'post_photos');
 
         $post->save();
+        if ($colors) {
+            $post->colors()->sync($colors);
+        }
+
         if (!$post->image) {
             $image = new Image;
             $image->path = $files['path'];
@@ -177,7 +186,7 @@ class PostController extends Controller
     public function show($post)
     {
         //
-        $post = Post::with(['image', 'user', 'likes', 'color', 'deviceBrand'])->where('id', '=', $post)->first();
+        $post = Post::with(['image', 'user', 'likes', 'colors', 'deviceBrand', 'pcType', 'carBrand', 'carHand'])->where('id', '=', $post)->first();
 
             
         // $post = Post::find($post);
@@ -186,6 +195,7 @@ class PostController extends Controller
         //     $user = $comment->user;
         //     $image = $comment->user->image->path;
         // }
+
         
         return $post;
     }

@@ -16,9 +16,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['prefix' => 'v1/admin'], function () {
+    Route::get('dashboard', 'AdminController@dashbaord');
+
     Route::get('/users', 'AdminController@getUsers');
     Route::get('/users/{user}', 'AdminController@getUser');
     Route::delete('/users/{user}', 'AdminController@deleteUser');
+
+    Route::get('/posts', 'AdminController@getPosts');
+    Route::get('/posts/{post}', 'AdminController@getPost');
+    Route::delete('/posts/{post}', 'AdminController@deletePost');
+
+    Route::get('/categories', 'AdminController@getCategories');
+    Route::get('/all-categories', 'AdminController@getAllCategories');
+    Route::get('/categories/{category}', 'AdminController@getCategory');
+    Route::put('/categories/', 'AdminController@storeCategory');
+    Route::patch('/categories/', 'AdminController@updateCategory');
+    Route::delete('/categories/{category}', 'AdminController@deleteCategory');
 });
 
 
@@ -38,6 +51,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function () {
 
 
 Route::group(['prefix' => 'v1'], function () {
+    Route::get('/constants/', 'ConstantController@index');
     Route::get('/cities', function () {
         $cities = App\City::all();
         return $cities;
@@ -46,13 +60,16 @@ Route::group(['prefix' => 'v1'], function () {
         $countries = App\Country::all();
         return $countries;
     });
+
+    Route::get('/categories', 'CategoryController@index');
+
+
     Route::post('/register', 'AuthController@register')->middleware('guest:api');
 
     Route::get('/posts', 'PostController@index');
     Route::get('/posts/{post}', 'PostController@show');
     Route::get('/posts/{post}/comments', 'PostController@comments');
 
-    Route::get('/categories', 'CategoryController@index');
 
     Route::post('/login', 'AuthController@login');
     Route::post('/register', 'AuthController@register');

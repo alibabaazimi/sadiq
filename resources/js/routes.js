@@ -11,18 +11,12 @@ import About from './pages/About.vue';
 import Terms from './pages/Terms.vue';
 import PostList from './components/PostList.vue';
 import PostShow from './pages/PostShow.vue';
-import NewPost from './pages/NewPost.vue';
 
 import UserLogin from './pages/UserLogin.vue';
 import UserRegister from './pages/UserRegister.vue';
 import UserProfilePrivate from './pages/UserProfilePrivate.vue';
 import Logout from './pages/UserLogout.vue';
 
-import AdminMainLayout from './admin/MainLayout';
-import Dashboard from './admin/Dashboard.vue'
-import Users from './admin/Users.vue'
-import AdminUserShow from './admin/UserShow.vue'
-import AdminUserNew from './admin/UserNew.vue'
 
 import Page404 from './pages/404.vue';
 import Test from './pages/Test.vue';
@@ -31,31 +25,66 @@ export const routes = [
 
     {
         path: '/admin',
-        component: AdminMainLayout,
+        component: () => import('./admin/MainLayout'),
         meta: {
             middleware: Middleware.auth
         },
         children: [
             {
                 path: '/',
-                component: Dashboard,
-                name: Dashboard,
+                redirect: {
+                    name: 'Dashboard'
+                }
+            },
+            {
+                path: 'dashboard',
+                component: () => import('./admin/Dashboard.vue'),
+                name: 'Dashboard',
             },
             {
                 path: 'users',
-                component: Users,
-                name: 'Users',
+                component: () => import('./admin/Users.vue'),
+                name: 'AdminUsers',
             },
             {
                 path: 'user/:userId',
-                component: AdminUserShow,
+                component: () => import('./admin/UserShow.vue'),
                 name: 'AdminUserShow',
             },
             {
                 path: 'users/new',
-                component: AdminUserNew,
+                component: () => import('./admin/UserNew.vue'),
                 name: 'AdminUserNew',
-            }
+            },
+            {
+                path: 'posts',
+                component: () => import('./admin/Posts.vue'),
+                name: 'AdminPosts',
+            },
+            {
+                path: 'post/:postId',
+                component: () => import('./admin/PostShow.vue'),
+                name: 'AdminPostShow',
+
+            },
+            {
+                path: 'settings/categories',
+                component: () => import('./admin/Categories.vue'),
+                name: 'AdminCategories',
+
+            },
+            {
+                path: 'categories/new',
+                component: () => import('./admin/CategoryNew.vue'),
+                name: 'AdminCategoryNew',
+
+            },
+            {
+                path: 'categories/:categoryId',
+                component: () => import('./admin/CategoryEdit.vue'),
+                name: 'AdminCategoryEdit',
+
+            },
         ]
     },
     {
@@ -90,8 +119,8 @@ export const routes = [
             },
             {
                 path: '/posts/new',
-                component: NewPost,
-                name: 'NewPost',
+                component: () => import('./pages/PostNew'),
+                name: 'PostNew',
                 meta: {
                     middleware: Middleware.auth
                 }
@@ -144,6 +173,8 @@ export const routes = [
 const router = new VueRouter({
     mode: 'history',
     routes,
+    linkActiveClass: "active",
+    linkExactActiveClass: "exact-active",
     scrollBehavior (to, from, savedPosition) {
         return { x: 0, y: 0 }
     }

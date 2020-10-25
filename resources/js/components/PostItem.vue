@@ -7,10 +7,8 @@
                     <h3>{{ post.title }}</h3>
                     <p>{{ post.desc }}</p>
                 </router-link>
-                <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i> Share</button>
-                <button type="button" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"></i> Like</button>
                 <a href="">
-                <span class="float-right text-muted"> comments</span>
+                <span class="float-right text-muted">{{ post.price }} {{/* post.currency.symbol ? post.currency.symbol :*/ post.currency.name }}</span>
                 </a>
             </div>
             <!-- /.card-body -->

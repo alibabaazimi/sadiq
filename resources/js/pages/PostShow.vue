@@ -2,33 +2,31 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-4 p-0">
-                <div class="col-md-12">
-                    <img :src="postImage" class="img-thumbnail" alt="Product Image">
-                </div>
-                <div class="d-sm-block d-md-none mt-3 pl-2">
-                    <h3 class="">{{ post.title }}</h3>
-                    <a href="" class=" btn-sm"><i class="far fa-thumbs-up"></i>{{ post.likes.length }} Likes</a>
-                </div>
-                <div class="mt-3 pl-2 pr-2">
-                    <div class="btn btn-primary btn-flat">
-                        <i class="fas fa-comment fa-lg"></i>
-                        Send Message
+
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="embed-responsive embed-responsive-1by1 img-thumbnail" >
+                            <img :src="postImage" class="embed-responsive-item" style="object-fit: contain" alt="Product Image">
+                        </div>
                     </div>
 
-                    <div class="btn btn-danger btn-flat float-right">
-                        <i class="fas fa-heart fa-lg"></i>
-                        Add to Wishlist
+                    <div class="card-footer p-2">
+                        <div class="btn btn-primary btn-flat">
+                            <i class="fas fa-comment fa-lg"></i>
+                            <p class="d-inline text-truncate">Send Message</p>
+                        </div>
+
+                        <div class="btn btn-danger btn-flat float-right">
+                            <i class="fas fa-heart fa-lg"></i>
+                            <p class="d-inline text-truncate">Add to Wishlist</p>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="d-none d-md-block">
+                <div class="">
                     <h3 class="">{{ post.title }}</h3>
-                    <a href="" class=" btn-sm"><i class="far fa-thumbs-up"></i>{{ post.likes.length }} Likes</a>
                 </div>
-
-
-
                 <div class="mt-4 post-share col">
                     <a href="#" class="text-gray">
                         <i class="fab fa-facebook-square fa-2x"></i>
@@ -44,34 +42,86 @@
                     </a>
                 </div>
                 <hr>
-
-
-
+                
                 <div class="card">
                     <div class="card-header bg-olive">
-                        Basic Informations:
+                        Details:
                     </div>
                     <div class="card-body">
                         <ul class="list-group-flush p-0">
-                            <li class="list-group-item">
+                            <li class="list-group-item" v-if="post.device_brand">
                                 <div class="d-inline-block">Device Brand</div>
-                                <div class="d-inline-block float-right">{{ post.device_brand['name'] }}</div>
+                                <div class="d-inline-block float-right">{{ post.device_brand.name }}</div>
                             </li>
-                            <li class="list-group-item">
+                            <li class="list-group-item" v-if="post.device_model">
                                 <div class="d-inline-block">Device Model</div>
                                 <div class="d-inline-block float-right">{{ post.device_model }}</div>
                             </li>
-                            <li class="list-group-item">
-                                <div class="d-inline-block"></div>
-                                <div class="d-inline-block float-right">{{ post.color['name'] }}</div>
+                            <li class="list-group-item" v-if="post.device_pc_type">
+                                <div class="d-inline-block">PC Type</div>
+                                <div class="d-inline-block float-right">{{ post.pc_type.name }}</div>
                             </li>
-                            <li class="list-group-item">
-                                <div class="d-inline-block">Price</div>
-                                <div class="d-inline-block float-right">{{ post.device_brand['name'] }}</div>
+                            <li class="list-group-item" v-if="post.device_hdd_size">
+                                <div class="d-inline-block">Hard Disk</div>
+                                <div class="d-inline-block float-right">{{ post.device_hdd_size }} GB</div>
                             </li>
-                            <li class="list-group-item">
-                                <div class="d-inline-block">Price</div>
-                                <div class="d-inline-block float-right">{{ post.price }}</div>
+                            <li class="list-group-item" v-if="post.device_ram_size">
+                                <div class="d-inline-block">RAM</div>
+                                <div class="d-inline-block float-right">{{ post.device_ram_size }} GB</div>
+                            </li>
+                            <li class="list-group-item" v-if="post.device_processor">
+                                <div class="d-inline-block">Processor</div>
+                                <div class="d-inline-block float-right">{{ post.device_processor }}</div>
+                            </li>
+
+                            <li class="list-group-item" v-if="post.building_build_year">
+                                <div class="d-inline-block">Build Year</div>
+                                <div class="d-inline-block float-right">{{ post.building_build_year }}</div>
+                            </li>
+                            <li class="list-group-item" v-if="post.building_area_as_square">
+                                <div class="d-inline-block">Area As Square</div>
+                                <div class="d-inline-block float-right">{{ post.building_area_as_square }} m<sup>2</sup></div>
+                            </li>
+                            <li class="list-group-item" v-if="post.building_floor">
+                                <div class="d-inline-block">Floor</div>
+                                <div class="d-inline-block float-right">{{ post.building_floor }}</div>
+                            </li>
+                            <li class="list-group-item" v-if="post.building_rooms">
+                                <div class="d-inline-block">Rooms</div>
+                                <div class="d-inline-block float-right">{{ post.building_rooms }}</div>
+                            </li>
+                            <li class="list-group-item" v-if="post.building_deposit">
+                                <div class="d-inline-block">Amount of deposit</div>
+                                <div class="d-inline-block float-right">{{ post.building_deposit }}</div>
+                            </li>
+                            <li class="list-group-item" v-if="post.building_rent_per_month">
+                                <div class="d-inline-block">Rent per Month</div>
+                                <div class="d-inline-block float-right">{{ post.building_rent_per_month }}</div>
+                            </li>
+                            <li class="list-group-item" v-if="post.building_has_parking">
+                                <div class="d-inline-block">Has Parking</div>
+                                <div class="d-inline-block float-right">{{ post.building_has_parking == 1 ? 'Yes' : 'No' }}</div>
+                            </li>
+                            <li class="list-group-item" v-if="post.building_has_elevator">
+                                <div class="d-inline-block">Has Elevator</div>
+                                <div class="d-inline-block float-right">{{ post.building_has_elevator == 1 ? 'Yes' : 'No' }}</div>
+                            </li>
+
+                            <li class="list-group-item" v-if="post.car_brand">
+                                <div class="d-inline-block">Car Brand</div>
+                                <div class="d-inline-block float-right">{{ post.car_brand.name }}</div>
+                            </li>
+                            <li class="list-group-item" v-if="post.car_model">
+                                <div class="d-inline-block">Car Model</div>
+                                <div class="d-inline-block float-right">{{ post.car_model }}</div>
+                            </li>
+                            <li class="list-group-item" v-if="post.car_hand">
+                                <div class="d-inline-block">Car Hand</div>
+                                <div class="d-inline-block float-right">{{ post.car_hand.name }}</div>
+                            </li>
+                            <li class="list-group-item" v-if="post.car_kilometers_consumed">
+                                <div class="d-inline-block">Kilometers Consumed</div>
+                                <div class="d-inline-block float-right">{{ post.car_kilometers_consumed }} Kms</div>
                             </li>
                         </ul>
                     </div>

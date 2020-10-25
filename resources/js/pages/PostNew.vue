@@ -1,7 +1,4 @@
 <style scoped>
-[title = "Red"] {
-    background-color: red
-}
 </style>
 <template>
     <div class="col-md-6 offset-md-3">
@@ -95,11 +92,14 @@
                             <label :class="'btn btn-sm btn-outline-danger ' + (post.dealType == 2 ? 'active' : '')">
                                 <input type="radio" name="dealtype" value="2" v-model="post.dealType" id="option2" autocomplete="off">Want to Buy
                             </label>
-                            <label :class="'btn btn-sm btn-outline-danger ' + (post.dealType == 3 ? 'active' : '')">
+                            <label :class="'btn btn-sm btn-outline-danger ' + (post.dealType == 3 ? 'active' : '')" v-if="isInCategoryPath([1,2,4])">
                                 <input type="radio" name="dealtype" value="3" v-model="post.dealType" id="option3" autocomplete="off">Exchange
                             </label>
-                            <label :class="'btn btn-sm btn-outline-danger ' + (post.dealType == 4 ? 'active' : '')">
+                            <label :class="'btn btn-sm btn-outline-danger ' + (post.dealType == 4 ? 'active' : '')" v-if="isInCategoryPath([2,3])">
                                 <input type="radio" name="dealtype" value="4" v-model="post.dealType" id="option4" autocomplete="off">For Rent
+                            </label>
+                            <label :class="'btn btn-sm btn-outline-danger ' + (post.dealType == 5 ? 'active' : '')" v-if="isInCategoryPath([3])">
+                                <input type="radio" name="dealtype" value="5" v-model="post.dealType" id="option5" autocomplete="off">Mortgage
                             </label>
                         </div>
                     </div>
@@ -111,9 +111,7 @@
                         <div class="col-4">
                             <label class="form-label">Unit</label>
                             <select class="form-control" placeholder="Measurment Unit" v-model="post.unit">
-                                <option value="1">Unit</option>
-                                <option value="2">Piece</option>
-                                <option value="3">Package</option>
+                                <option v-for="unit in units" :key="unit.id" :value="unit.id">{{ unit.name }}</option>
                             </select>
                         </div>
                     </div>
@@ -125,26 +123,25 @@
                         <div class="col-4">
                             <label>Currency</label>
                             <select class="form-control" v-model="post.currencyId">
-                                <option value="1">USD</option>
-                                <option value="2">EUR</option>
-                                <option value="3">KRO</option>
-                                <option value="3">IRR</option>
-                                <option value="4">AFN</option>
+                                <option v-for="currency in currencies" :key="currency.id" :value="currency.id">{{ currency.name }}</option>
                             </select>
                         </div>
                     </div>
                     <div v-if="isInCategoryPath([1])">
-                        <div class="form-group" v-if="isInCategoryPath([1,6,7,8])">
+                        <div class="form-group" v-if="isInCategoryPath([1])">
                             <label>Brand</label>
                             <select class="form-control col" v-model="post.deviceBrand">
-                                <option v-for="brand in brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
+                                <option v-for="brand in deviceBrands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
+                                <option value="other">Other</option>
                             </select>
+                            <label v-if="post.deviceBrand=='other'">New Brand Name</label>
+                            <input type="text" v-if="post.deviceBrand=='other'" class="form-control" placeholder="Enter brand name here">
                         </div>
-                        <div class="form-group" v-if="isInCategoryPath([1,6,7,8])">
+                        <div class="form-group" v-if="isInCategoryPath([1])">
                             <label>Model</label>
                             <input type="text" class="form-control" name="model" placeholder="Model" v-model="post.deviceModel">
                         </div>
-                        <div class="form-group" v-if="isInCategoryPath([8])">
+                        <div class="form-group" v-if="isInCategoryPath([7])">
                             <label>PC Type</label>
                             <select class="form-control" v-model="post.devicePcType">
                                 <option value="1">Laptop</option>
@@ -162,7 +159,7 @@
                         </div>
                         <div class="form-group" v-if="isInCategoryPath([7])">
                             <label>Processor</label>
-                            <v-select :options="processors" 
+                            <v-select :options="deviceProcessors" 
                                 label="name" 
                                 :reduce="processor => processor.id" 
                                 v-model="post.deviceProcessor">
@@ -171,18 +168,18 @@
                     </div>
 
                     <div v-if="isInCategoryPath([3])">
-                        <div class="form-group">
+                        <div class="form-group" v-if="isInCategoryPath([13,14])">
                             <label>Build Year</label>
                             <input type="text" class="form-control" name="build-year" placeholder="Build Year" v-model="post.buildingBuildYear">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" v-if="isInCategoryPath([13,14])">
                             <label>Floor</label>
                             <v-select v-model="post.buildingFloor"
                                 :options="floors" label="name"
                                 :reduce="floor => floor.id">
                             </v-select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" v-if="isInCategoryPath([13,14])">
                             <label>Rooms</label>
                             <input type="number" class="form-control" name="rooms" placeholder="Rooms" v-model="post.buildingRooms">
                         </div>
@@ -195,7 +192,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" v-if="isInCategoryPath([13,14])">
                             <label>Facilities</label>
                             <div class="form-row">
                                 <div class="icheck-primary pl-1">
@@ -208,13 +205,24 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" v-if="post.dealType == 4">
                             <label>Deposit</label>
-                            <input type="number" class="form-control" name="deposit" placeholder="Deposit" v-model="post.buildingDeposit">
+
+                            <div class="input-group mb-2">
+                                <input type="number" class="form-control" name="area_as_square" placeholder="e.g.  200" v-model="post.buildingDeposit">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">{{ currencies[post.currencyId-1]['name'] }}</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" v-if="post.dealType == 4">
                             <label>Rent Per Month</label>
-                            <input type="number" class="form-control" name="rent_per_month" placeholder="Rent per month" v-model="post.buildingRentPerMonth">
+                            <div class="input-group mb-2">
+                                <input type="number" class="form-control" name="rent_per_month" placeholder="e.g.  200" v-model="post.buildingRentPerMonth">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">{{ currencies[post.currencyId-1]['name'] }}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -227,6 +235,8 @@
                                 :reduce="carBrands => carBrands.id"
                                 label="name">
                             </v-select>
+                            <label v-if="post.carBrand=='other'">New Brand Name</label>
+                            <input type="text" v-if="post.carBrand=='other'" class="form-control" placeholder="Enter brand name here">
                         </div>
                         <div class="form-group">
                             <label>Car Model</label>
@@ -240,11 +250,9 @@
                     </div>
 
                     <div class="form-group" v-if="isInCategoryPath([1,2,4])">
-                        <label>Usage Status</label>
+                        <label>Condition</label>
                         <select class="form-control" v-model="post.usageStatus">
-                            <option value="1">New</option>
-                            <option value="2">Used</option>
-                            <option value="3">Open box</option>
+                            <option v-for="condition in conditions" :key="condition.id" value="condition.id">{{ condition.name }}</option>
                         </select>
                     </div>
 
@@ -255,6 +263,7 @@
                             :reduce="colors => colors.id"
                             label="name"
                             ref="colorsRef"
+                            v-model="post.availableColors"
                             @input="$refs.colorsRef.$refs.search.focus()">
                         </v-select>
                     </div>
@@ -425,28 +434,37 @@ import { latLng } from "leaflet";
             }
         },
         created() {
-            this.$store.dispatch('constants/fetchCities');
-            this.$store.dispatch('constants/fetchCountries')
+
+            this.$store.dispatch('constants/fetchAll');
             this.$store.dispatch('constants/fetchCategories')
         },
         computed: {
+            currencies() {
+                return this.$store.getters['constants/getCurrencies']
+            },
+            units() {
+                return this.$store.getters['constants/getUnits']
+            },
+            deviceBrands() {
+                return this.$store.getters['constants/getDeviceBrands']
+            },
+            deviceProcessors() {
+                return this.$store.getters['constants/getDeviceProcessors']
+            },
+            carBrands() {
+                return this.$store.getters['constants/getCarBrands']
+            },
+            colors() {
+                return this.$store.getters['constants/getColors']
+            },
+            conditions() {
+                return this.$store.getters['constants/getConditions']
+            },
             countries() {
                 return this.$store.getters['constants/getCountries'];
             },
             cities() {
                 return this.$store.getters['constants/getCities']
-            },
-            brands() {
-                return [
-                    {id: 1, name: "Samsung"},
-                    {id: 2, name: "Apple"},
-                ]
-            },
-            processors() {
-                return [
-                    {id: 1, name: "Core i3"},
-                    {id: 2, name: "Core i5"},
-                ]
             },
             floors() {
                 let floors = [];
@@ -456,24 +474,6 @@ import { latLng } from "leaflet";
                     floors.push({ id: i, name: i});
                 }
                 return floors;
-            },
-            carBrands() {
-                let brands = [];
-                brands.push({ id: 1, name: 'Corolla'})
-                brands.push({ id: 2, name: 'Toyota'})
-                brands.push({ id: 3, name: 'Benz'})
-                return brands;
-            },
-            colors() {
-                let colors = [
-                    { id: 1, name: 'Black'},
-                    { id: 2, name: 'White'},
-                    { id: 3, name: 'Red'},
-                    { id: 4, name: 'Yellow'},
-                    { id: 5, name: 'Blue'},
-                    { id: 6, name: 'Green'},
-                ]
-                return colors;
             },
             mainCategories() {
                 return this.$store.getters['constants/getCategories']

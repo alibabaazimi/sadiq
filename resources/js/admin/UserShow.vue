@@ -2,7 +2,15 @@
     <div class="row">
         <div class="col">
             <div class="card">
-                <div class="card-header">User Info</div>
+                <div class="card-header">
+                    User Info
+                    <div class="card-tools">
+                        <button class="btn btn-danger">
+                            <i class="fa fa-trash"></i>
+                            Remove User
+                        </button>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
@@ -12,7 +20,6 @@
                                     Change
                                 </div>
                             </div>
-
                         </div>
                         <div class="col-md-9">
                             <div class="card p-4">
@@ -44,13 +51,20 @@
                                             </option>
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary">
+                                            <i class="fa fa-save"></i>
+                                            Save 
+                                        </button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
                         
                     </div>
                 </div>
-
+                <div class="card-footer">
+                </div>
             </div>
         </div>
     </div>
@@ -67,7 +81,7 @@
         },
         computed: {
             user() {
-                return this.$store.getters.['admin/getUser']
+                return this.$store.getters['admin/getUser']
             },
             cities() {
                 return this.$store.getters.['constants/getCities'];

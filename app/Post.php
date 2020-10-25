@@ -8,6 +8,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Post extends Model
 {
     use SoftDeletes;
+
+    protected $hidden =([
+        'contact_country',
+        'contact_email',
+        'contact_address',
+        'contact_city',
+        'contact_email',
+        'contact_location_type',
+        'contact_map_lat',
+        'contact_map_lng',
+        'contact_map_zoom',
+        'contact_phone',
+        'contact_phone_visibility',
+    ]);
     //
     public function user()
     {
@@ -18,9 +32,13 @@ class Post extends Model
     {
         return $this->belongsTo('App\Unit');
     }
-    public function color()
+    public function currency()
     {
-        return $this->belongsTo('App\Color', 'available_colors');
+        return $this->belongsTo('App\Currency');
+    }
+    public function colors()
+    {
+        return $this->belongsToMany('App\Color', 'post_colors', 'post_id', 'color_id')->withTimestamps();
     }
     public function dealType()
     {
@@ -30,9 +48,21 @@ class Post extends Model
     {
         return $this->belongsTo('App\DeviceBrand', 'device_brand');
     }
+    public function pcType()
+    {
+        return $this->belongsTo('App\PcType', 'device_pc_type');
+    }
     public function deviceProcessor()
     {
         return $this->belongsTo('App\DeviceProcessor', 'device_processor');
+    }
+    public function carBrand()
+    {
+        return $this->belongsTo('App\CarBrand', 'car_brand');
+    }
+    public function carHand()
+    {
+        return $this->belongsTo('App\CarHand', 'car_hand');
     }
 
     public function image()
