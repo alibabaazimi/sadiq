@@ -3,45 +3,12 @@
         <portal-target name="destination"></portal-target>
         <div class="row mb-2 mt-1 sticky-top" style="top: 75px">
             <div class="col-md-6 offset-md-3">
-                <div class="input-group mb-3 shadow">
-                    <div class="input-group-prepend">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-                            {{ searchCategory }}
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#" @click="setSearchCategory('All Category')">All</a>
-                            <a class="dropdown-item" href="#" @click="setSearchCategory('Electronics')">Electronics</a>
-                            <a class="dropdown-item" href="#" @click="setSearchCategory('Buildings')">Buildings</a>
-                            <a class="dropdown-item" href="#" @click="setSearchCategory('Vehicles')">Vehicles</a>
-                        </div>
-                    </div>
-                    <input type="hidden" name="search_param" value="all" id="search_param">         
-                    <input type="text" class="form-control" name="x" :placeholder="'Search in ' + searchCategory">
-                    <div class="input-group-append">
-                        <button class="btn btn-secondary" type="button"><span class="fa fa-search"></span></button>
-                    </div>
-                </div>
+                <search-bar></search-bar>
             </div>
         </div>
         <div class="row">
             <div class="col-md-2">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Filter</div>
-                    </div>
-                    <div class="card-body">
-                        <ul class="nav flex-column">
-                            Price
-                            <input id="range_1" type="text" name="range_1" value="">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="#">Land</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Vehicles</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                <categories></categories>
             </div>
             <div class="col-md-8">
                 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -80,9 +47,9 @@
                 </div>
                 <hr>
                 <h3>All posts:</h3>
-                <div class="row">
+                <!-- <div class="row"> -->
                     <post-list :posts="posts"></post-list>
-                </div>
+                <!-- </div> -->
             </div>
             <div class="col-md-2">
                 <div class="card">
@@ -99,14 +66,14 @@
     import {
         mapGetters
     } from 'vuex'
+    import SearchBar from '../components/Search'
+    import Categories from '../components/Categories'
     import PostList from '../components/PostList'
+
     export default {
-        data() {
-            return {
-                searchCategory: 'All Category',
-            }
-        },
         components: {
+            SearchBar,
+            Categories,
             PostList
         },
         mounted() {
@@ -114,7 +81,8 @@
         },
         computed: {
             ...mapGetters({
-                posts: 'posts/all'
+                posts: 'posts/all',
+                postsLoadingStatus: 'posts/allLoadingStatus'
             }),
         },
         methods: {
@@ -122,19 +90,7 @@
                 this.searchCategory = e
             }
         },
-        mounted() {
-            $('#range_1').ionRangeSlider({
-                min     : 0,
-                max     : 5000,
-                from    : 1000,
-                to      : 4000,
-                type    : 'double',
-                step    : 1,
-                prefix  : '$',
-                prettify: false,
-                hasGrid : true
-            })
-        }
+
         
     }
 

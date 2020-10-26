@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Mail\SendEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -61,20 +62,26 @@ Route::group(['prefix' => 'v1'], function () {
         return $countries;
     });
 
+    Route::get('/posts/{post}/comments', 'PostController@comments');
+
     Route::get('/categories', 'CategoryController@index');
 
 
     Route::post('/register', 'AuthController@register')->middleware('guest:api');
 
     Route::get('/posts', 'PostController@index');
-    Route::get('/posts/{post}', 'PostController@show');
-    Route::get('/posts/{post}/comments', 'PostController@comments');
+    Route::get('/posts/{slug}', 'PostController@show');
 
 
     Route::post('/login', 'AuthController@login');
     Route::post('/register', 'AuthController@register');
-
     Route::get('/user/{user}/messages', 'UserController@index');
-
     Route::get('/user/{user}/posts', 'PostController@postsByUser');
+
+
+    Route::get('email-test', function () {
+        $name = 'Registration';
+        Mail::to('sadeqzafar8@gmail.com')->send(new SendEmail($name));
+        return 'Email sent Successfully';
+    });
 });

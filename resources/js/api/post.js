@@ -11,11 +11,20 @@ export default {
     getPostsByUser: function(userId) {
         return axios.get(APP_CONFIG.API_URL + '/user/'+ userId +'/posts');
     },
-    getPost: function (postId) {
-        return axios.get(APP_CONFIG.API_URL + '/posts/' + postId);
+    getPost: function (slug) {
+        return axios.get(APP_CONFIG.API_URL + '/posts/' + slug);
     },
-    getPostComments: function (postId) {
-        return axios.get(APP_CONFIG.API_URL + '/posts/' + postId + '/comments')
+    submitPost: function (post) {
+        let config = {
+            header : {
+                "Content-Type": "multipart/form-data"
+            }
+        }
+        console.log(post)
+        return axios.post(APP_CONFIG.API_URL + '/posts/', post, config);
+    },
+    getPostComments: function (slug) {
+        return axios.get(APP_CONFIG.API_URL + '/posts/' + slug + '/comments')
     },
     submitComment: function (comment) {
         return axios.post(APP_CONFIG.API_URL + '/posts/' + comment.postId + '/comments', comment);

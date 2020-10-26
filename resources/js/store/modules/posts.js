@@ -1,10 +1,13 @@
 import { post } from 'jquery'
 import auth from './auth'
 import PostAPI from '../../api/post'
+import { reject } from 'lodash'
 
 export const posts = {
     namespaced: true,
     state: {
+        allLoadingStatus: 1,
+        currentPostLoadingStatus: 1,
         currentPost: {
             amount: '',
             category_id: '',
@@ -27,6 +30,12 @@ export const posts = {
         postsByMe: []
     },
     getters: {
+        allLoadingStatus(state) {
+            return state.allLoadingStatus
+        },
+        currentPostLoadingStatus(state) {
+            return state.currentPostLoadingStatus
+        },
         all(state) {
             return state.all
         },
@@ -47,6 +56,12 @@ export const posts = {
         }
     },
     mutations: {
+        SET_ALL_LOADING_STATUS(state, status) {
+            state.allLoadingStatus = status;
+        },
+        SET_CURRENT_POST_LOADING_STATUS(state, status) {
+            state.currentPostLoadingStatus = status
+        },
         SET_POSTS(state, posts) {
             state.all = posts
         },
@@ -67,9 +82,17 @@ export const posts = {
     },
     actions: {
         fetchPosts({commit}) {
-            PostAPI.getPosts()
-            .then(function(response) {
-                commit('SET_POSTS', response.data)
+            return new Promise((resolve, reject) => {
+                PostAPI.getPosts()
+                .then(function(response) {
+                    commit('SET_POSTS', response.data);
+                    commit('SET_ALL_LOADING_STATUS', 2);
+                    resolve(response);
+                })
+                .catch(error => {
+                    commit('SET_ALL_LOADING_STATUS', 3);
+                    reject(error)
+                })
             })
         },
         fetchPostsByMe({commit}) {
@@ -84,16 +107,43 @@ export const posts = {
                 commit('SET_POSTS_BY_USER', response.data)
             })
         },
-        fetchPost({commit}, postId) {
-            PostAPI.getPost(postId)
-            .then(function(response) {
-                commit('SET_POST', response.data);
-            });
+        fetchPost({commit}, slug) {
+            return new Promise((resolve,reject) => {
+                PostAPI.getPost(slug)
+                .then(function(response) {
+                    commit('SET_POST', response.data);
+                    commit('SET_CURRENT_POST_LOADING_STATUS', 2);
+                    resolve(response)
+                })
+                .catch(error => {
+                    commit('SET_CURRENT_POST_LOADING_STATUS', 3);
+                    reject(error);
+                })
+            })
         },
-        fetchPostComments({commit}, postId) {
-            PostAPI.getPostComments(postId)
-            .then(function(response) {
-                commit('SET_POST_COMMENTS', response.data);
+        submitPost({commit, dispatch}, post) {
+            return new Promise((resolve, reject) => {
+                PostAPI.submitPost(post)
+                .then( (response) => {
+                    console.log('Response'+ response)
+                    resolve(response)
+                })
+                .catch(error => {
+                    reject(error)
+                });
+            })
+
+        },
+        fetchPostComments({commit}, slug) {
+            return new Promise((resolve, reject) => {
+                PostAPI.getPostComments(slug)
+                .then(function(response) {
+                    commit('SET_POST_COMMENTS', response.data);
+                    resolve(response)
+                })
+                .catch(error => {
+                    reject(response);
+                })
             })
         },
         submitComment({commit, dispatch}, comment) {

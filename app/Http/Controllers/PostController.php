@@ -52,6 +52,7 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+        // return $request->all();
         // Basic Info
         // title: '',
         // description: '',
@@ -183,10 +184,10 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show($post)
+    public function show($slug)
     {
         //
-        $post = Post::with(['image', 'user', 'likes', 'colors', 'deviceBrand', 'pcType', 'carBrand', 'carHand'])->where('id', '=', $post)->first();
+        $post = Post::with(['image', 'user', 'likes', 'colors', 'deviceBrand', 'pcType', 'carBrand', 'carHand'])->where('slug', '=', $slug)->first();
 
             
         // $post = Post::find($post);

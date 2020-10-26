@@ -252,7 +252,7 @@
                     <div class="form-group" v-if="isInCategoryPath([1,2,4])">
                         <label>Condition</label>
                         <select class="form-control" v-model="post.usageStatus">
-                            <option v-for="condition in conditions" :key="condition.id" value="condition.id">{{ condition.name }}</option>
+                            <option v-for="condition in conditions" :key="condition.id" :value="condition.id">{{ condition.name }}</option>
                         </select>
                     </div>
 
@@ -553,30 +553,12 @@ import { latLng } from "leaflet";
             },
             submitPost() {
                 if (this.userAgreementStatus) {
-                    let config = {
-                        header : {
-                            "Content-Type": "multipart/form-data"
-                        }
-                    }
-                    // this.formData.append('title', this.post.title)
-                    // this.formData.append('desc', this.post.description)
-                    // this.formData.append('quantity', this.post.quantity)
-                    // this.formData.append('price', this.post.price)
-                    // this.formData.append('unit_id', this.post.unit)
-                    // this.formData.append('category_id', this.post.category);
-
-
-
                     for (var prop in this.post) {
                         this.formData.append(prop, this.post[prop]);
                     }
 
-                    axios.post(
-                        '/api/v1/posts', 
-                        this.formData,
-                        config,
-                    ).then(response => {
-                        console.log(response)
+                    this.$store.dispatch('posts/submitPost', this.formData)
+                    .then(response => {
                         $(document).Toasts('create', {
                             title: 'Success!',
                             body: 'Post added successfully.',

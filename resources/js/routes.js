@@ -97,6 +97,16 @@ export const routes = [
                 name: 'Home'
             },
             {
+                path: '/search',
+                component: () => import('./pages/Search'), 
+                name: 'Search'
+            },
+            {
+                path: '/category/:slug',
+                component: () => import('./pages/Category'), 
+                name: 'Category'
+            },
+            {
                 path: 'login',
                 component: UserLogin,
                 name: 'UserLogin',
@@ -126,7 +136,7 @@ export const routes = [
                 }
             },
             {
-                path: '/posts/:postId',
+                path: '/posts/:slug',
                 component: PostShow,
                 name: 'PostShow',
             },

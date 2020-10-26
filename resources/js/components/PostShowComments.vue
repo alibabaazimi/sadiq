@@ -3,8 +3,8 @@
         <div class="card-header bg-orange">
             <h5>Reviews and Comments</h5>
         </div>
-        <div class="card-comments bg-white p-3">
-            <h5>{{ comments.length }} comments</h5>
+        <div class="card-comments bg-white p-3" v-if="comments.length>0">
+            <h5>{{ comments.length != 0 ? comments.length : 'No'  }} comments</h5>
             <div class="card-comment" v-for="comment in comments" :key="comment.id">
                 <img class="img-circle img-sm"  alt="User Image" :src="comment.user.image ? '/'+comment.user.image.path : comment.userProfileImage">
                 <div class="comment-text">
@@ -21,7 +21,7 @@
                     <div class="img-push">
                         <input type="hidden" v-model="comment.postId">
                         <input type="text" class="form-control form-control-sm" v-model="comment.text" name="comment"
-                            placeholder="Write your comment and press Enter">
+                            placeholder="Write your comment and press Enter" autocomplete="off">
                     </div>
                 </form>
                 <div v-else>To comment please login <router-link :to="{ name: 'UserLogin' }">Login</router-link></div>
@@ -31,16 +31,20 @@
 </template>
 <script>
     export default {
+        props: ['post'],
         data() {
             return {
                 comment: {
-                    postId: this.$route.params.postId,
-                    text: ''
+                    postId: this.post.id,
+                    text: '',
                 }
             }
         },
         created() {
+        },
+        mounted() {
             this.$store.dispatch('posts/fetchPostComments', this.comment.postId);
+
         },
         computed: {
             comments() {

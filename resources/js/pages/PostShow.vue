@@ -153,7 +153,7 @@
 
                 
                 <hr>
-                <comments :postId="post.id"></comments>
+                <comments :post="post" v-if="currentPostLoadingStatus==2"></comments>
             </div>
             
             <div class="col-md-2 d-none d-md-block">
@@ -177,9 +177,12 @@ export default {
         comments
     },
     created() {
-        this.$store.dispatch('posts/fetchPost', this.$route.params.postId);
+        this.$store.dispatch('posts/fetchPost', this.$route.params.slug);
     },
     computed: {
+        currentPostLoadingStatus() {
+            return this.$store.getters['posts/currentPostLoadingStatus']
+        },
         post() {
             return this.$store.getters['posts/currentPost']
         },

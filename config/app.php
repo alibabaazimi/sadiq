@@ -167,6 +167,9 @@ return [
          */
 
         Laravel\Socialite\SocialiteServiceProvider::class,
+        
+        Laravel\Scout\ScoutServiceProvider::class,
+        // ScoutEngines\Elasticsearch\ElasticsearchProvider::class,
         /*
          * Application Service Providers...
          */
